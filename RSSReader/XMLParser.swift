@@ -8,23 +8,26 @@
 
 import Foundation
 
-class NewsParser: NSObject, XMLParserDelegate {
+class NewsParser: NSObject {
     
     private var rssItems: [RSSItem] = []
+    private var categories: [String] = []
     private var currentElement: String = ""
-    private var currentTitle: String = ""{
-        didSet{
-            currentTitle = currentTitle.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
-        }
-    }
+    private var currentTitle: String = ""
     private var currentCategory: String = "" {
         didSet{
             currentCategory = currentCategory.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+            if !categories.contains(currentCategory) && currentCategory != "" {
+                categories.append(currentCategory)
+            }
         }
     }
     private var currentPubDate: String = ""{
         didSet{
             currentPubDate = currentPubDate.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+            if currentPubDate != ""{
+                currentPubDate.removeLast(3)
+            }
         }
     }
     
@@ -32,16 +35,38 @@ class NewsParser: NSObject, XMLParserDelegate {
     
     func parseNews(url: String, completionHandler: (([RSSItem]) -> Void)?){
         
+        
         self.parserCompletionHandler = completionHandler
         
-        let parser = XMLParser(contentsOf: URL(string: url)!)!
-        parser.delegate = self
-        parser.shouldProcessNamespaces = false
-        parser.shouldReportNamespacePrefixes = false
-        parser.shouldResolveExternalEntities = false
-        parser.parse()
+        let request = URLRequest(url: URL(string: url)!)
+        let urlSession = URLSession.shared
+        
+        DispatchQueue.global(qos: .background).async {
+            
+            urlSession.dataTask(with: request) { (data, response, error) in
+                guard let data = data else {
+                    if let error = error {
+                        print(error)
+                    }
+                    return
+                }
+                
+                // parse xml data
+                let parser = XMLParser(data: data)
+                parser.delegate = self
+                parser.parse()
+                
+                }.resume()
+            
+        }
         
     }
+    
+    
+    
+}
+
+extension NewsParser: XMLParserDelegate {
     
     // MARK: - XML Parser Delegate
     

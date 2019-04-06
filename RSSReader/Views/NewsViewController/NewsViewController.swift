@@ -9,7 +9,7 @@
 import UIKit
 
 class NewsViewController: UIViewController {
-
+    
     @IBOutlet weak var newsTableView: UITableView!
     
     private var rssItems: [RSSItem]?
@@ -17,13 +17,14 @@ class NewsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-       
+        
         
         newsTableView.delegate = self
         newsTableView.dataSource = self
         
         newsTableView.rowHeight = UITableView.automaticDimension
         newsTableView.estimatedRowHeight = 100
+        configureRefreshControl()
         
         fetchData()
         // Do any additional setup after loading the view.
@@ -32,13 +33,36 @@ class NewsViewController: UIViewController {
     private func fetchData(){
         let newsParser = NewsParser()
         newsParser.parseNews(url: "https://www.vesti.ru/vesti.rss") { (rssItems) in
+            
             self.rssItems = rssItems
             
-            OperationQueue.main.addOperation {
-                self.newsTableView.reloadSections(IndexSet(integer: 0), with: .left)
+            DispatchQueue.main.async{
+                self.newsTableView.reloadSections(IndexSet(integer: 0), with: .automatic)
             }
         }
     }
+    
+    func configureRefreshControl () {
+        // Add the refresh control to your UIScrollView object.
+        newsTableView.refreshControl = UIRefreshControl()
+        newsTableView.refreshControl?.addTarget(self,
+                                                action: #selector(handleRefreshControl),
+                                                for: .valueChanged)
+    }
+    
+    @objc func handleRefreshControl() {
+        
+        // Update content
+        
+        self.fetchData()
+        
+        // Dismiss the refresh control.
+        DispatchQueue.main.async {
+            self.newsTableView.refreshControl?.endRefreshing()
+        }
+        
+    }
+    
     
 }
 
@@ -55,7 +79,7 @@ extension NewsViewController: UITableViewDelegate, UITableViewDataSource {
             return 0
             
         }
-
+        
         return rssItems.count
         
     }
