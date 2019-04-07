@@ -17,32 +17,25 @@ class NewsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
+        configureNewsTableView()
+        fetchData()
+    }
+    
+    private func fetchData(){
+        let newsParser = NewsParser().initWithURL("https://www.vesti.ru/vesti.rss")
+
+        rssItems = newsParser.allFeeds()
+        newsTableView.reloadData()
+    }
+    
+    func configureNewsTableView () {
         
         newsTableView.delegate = self
         newsTableView.dataSource = self
         
         newsTableView.rowHeight = UITableView.automaticDimension
         newsTableView.estimatedRowHeight = 100
-        configureRefreshControl()
         
-        fetchData()
-        // Do any additional setup after loading the view.
-    }
-    
-    private func fetchData(){
-        let newsParser = NewsParser()
-        newsParser.parseNews(url: "https://www.vesti.ru/vesti.rss") { (rssItems) in
-            
-            self.rssItems = rssItems
-            
-            DispatchQueue.main.async{
-                self.newsTableView.reloadSections(IndexSet(integer: 0), with: .automatic)
-            }
-        }
-    }
-    
-    func configureRefreshControl () {
         // Add the refresh control to your UIScrollView object.
         newsTableView.refreshControl = UIRefreshControl()
         newsTableView.refreshControl?.addTarget(self,

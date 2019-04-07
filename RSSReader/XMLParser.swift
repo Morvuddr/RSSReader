@@ -31,38 +31,26 @@ class NewsParser: NSObject {
         }
     }
     
-    private var parserCompletionHandler: (([RSSItem]) -> Void)?
+    // initilise parser
+    func initWithURL(_ url :String) -> NewsParser {
+        parseNews(url: url)
+        return self
+    }
     
-    func parseNews(url: String, completionHandler: (([RSSItem]) -> Void)?){
+    func parseNews(url: String){
         
-        
-        self.parserCompletionHandler = completionHandler
-        
-        let request = URLRequest(url: URL(string: url)!)
-        let urlSession = URLSession.shared
-        
-        DispatchQueue.global(qos: .background).async {
-            
-            urlSession.dataTask(with: request) { (data, response, error) in
-                guard let data = data else {
-                    if let error = error {
-                        print(error)
-                    }
-                    return
-                }
-                
-                // parse xml data
-                let parser = XMLParser(data: data)
-                parser.delegate = self
-                parser.parse()
-                
-                }.resume()
-            
-        }
+        let parser = XMLParser(contentsOf: URL(string: url)!)!
+        parser.delegate = self
+        parser.shouldProcessNamespaces = false
+        parser.shouldReportNamespacePrefixes = false
+        parser.shouldResolveExternalEntities = false
+        parser.parse()
         
     }
     
-    
+    func allFeeds() -> [RSSItem] {
+        return rssItems
+    }
     
 }
 
@@ -98,10 +86,6 @@ extension NewsParser: XMLParserDelegate {
             let rssItem = RSSItem(title: currentTitle, pubDate: currentPubDate, category: currentCategory)
             rssItems.append(rssItem)
         }
-    }
-    
-    func parserDidEndDocument(_ parser: XMLParser) {
-        parserCompletionHandler?(rssItems)
     }
     
     func parser(_ parser: XMLParser, parseErrorOccurred parseError: Error) {
