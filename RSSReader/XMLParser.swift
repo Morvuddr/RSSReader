@@ -48,8 +48,12 @@ class NewsParser: NSObject {
         
     }
     
-    func allFeeds() -> [RSSItem] {
+    func getNews() -> [RSSItem] {
         return rssItems
+    }
+    
+    func getCategories() -> [String]{
+        return categories
     }
     
 }

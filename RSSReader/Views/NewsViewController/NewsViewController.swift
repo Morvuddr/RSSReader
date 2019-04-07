@@ -13,6 +13,9 @@ class NewsViewController: UIViewController {
     @IBOutlet weak var newsTableView: UITableView!
     
     private var rssItems: [RSSItem]?
+    private var filteredRssItems: [RSSItem]?
+    private var categories: [String]?
+    private var currentFilter = "Все"
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,7 +27,17 @@ class NewsViewController: UIViewController {
     private func fetchData(){
         let newsParser = NewsParser().initWithURL("https://www.vesti.ru/vesti.rss")
 
-        rssItems = newsParser.allFeeds()
+        rssItems = newsParser.getNews()
+        categories = newsParser.getCategories()
+        
+        if currentFilter == "Все"{
+            filteredRssItems = rssItems
+        } else {
+            filteredRssItems = rssItems?.filter(){
+                $0.category == currentFilter
+            }
+        }
+        
         newsTableView.reloadData()
     }
     
@@ -56,31 +69,56 @@ class NewsViewController: UIViewController {
         
     }
     
+    @IBAction func filterNews(_ sender: UIBarButtonItem) {
+        let alert = UIAlertController(title: "Выберете категорию", message: nil, preferredStyle: .actionSheet)
+        
+        let action = UIAlertAction(title: "Все", style: .default) { (action) in
+            self.filteredRssItems = self.rssItems
+            self.currentFilter = "Все"
+            self.newsTableView.reloadData()
+        }
+        
+        alert.addAction(action)
+        
+        for category in categories! {
+            let action = UIAlertAction(title: category, style: .default) { (action) in
+                self.filteredRssItems = self.rssItems?.filter(){
+                    $0.category == category
+                }
+                self.currentFilter = category
+                self.newsTableView.reloadData()
+            }
+
+            alert.addAction(action)
+
+        }
+        
+        let cancelAction = UIAlertAction(title: "Отмена", style: .cancel, handler: nil)
+        alert.addAction(cancelAction)
+        
+        present(alert, animated: true, completion: nil)
+    }
     
 }
 
 extension NewsViewController: UITableViewDelegate, UITableViewDataSource {
     
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        guard let rssItems = rssItems else{
+        guard let filteredRssItems = filteredRssItems else{
             
             return 0
             
         }
         
-        return rssItems.count
+        return filteredRssItems.count
         
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: NewsTableViewCell.identifier) as! NewsTableViewCell
         
-        if let item = rssItems?[indexPath.item]{
+        if let item = filteredRssItems?[indexPath.item]{
             cell.item = item
         }
         
