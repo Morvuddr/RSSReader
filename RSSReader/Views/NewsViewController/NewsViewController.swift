@@ -70,7 +70,7 @@ class NewsViewController: UIViewController {
     }
     
     @IBAction func filterNews(_ sender: UIBarButtonItem) {
-        let alert = UIAlertController(title: "Выберете категорию", message: nil, preferredStyle: .actionSheet)
+        let alert = UIAlertController(title: "Текущий фильтр: \(currentFilter)", message: nil, preferredStyle: .actionSheet)
         
         let action = UIAlertAction(title: "Все", style: .default) { (action) in
             self.filteredRssItems = self.rssItems
