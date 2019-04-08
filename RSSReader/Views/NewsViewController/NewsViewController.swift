@@ -40,15 +40,12 @@ class NewsViewController: UIViewController {
                     $0.category == self.currentFilter
                 }
             }
-            print(Thread.isMainThread)
+            
             DispatchQueue.main.async {
                 self.newsTableView.reloadSections(IndexSet(integer: 0), with: .automatic)
-                print(Thread.isMainThread)
             }
+            
         }
-        
-
-        
         
     }
     
@@ -60,7 +57,7 @@ class NewsViewController: UIViewController {
         newsTableView.rowHeight = UITableView.automaticDimension
         newsTableView.estimatedRowHeight = 100
         
-        // Add the refresh control to your UIScrollView object.
+        // Add the refresh control to UITableView object.
         newsTableView.refreshControl = UIRefreshControl()
         newsTableView.refreshControl?.addTarget(self,
                                                 action: #selector(handleRefreshControl),
@@ -140,5 +137,16 @@ extension NewsViewController: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        // Returns the initial view controller on a storyboard
+        let storyboard = UIStoryboard(name: String(describing: NewsItemViewController.self), bundle: nil)
+        let viewController = storyboard.instantiateInitialViewController() as! NewsItemViewController
+        
+        viewController.newsItem = filteredRssItems?[indexPath.row]
+        
+        navigationController?.pushViewController(viewController, animated: true)
+        
+    }
     
 }

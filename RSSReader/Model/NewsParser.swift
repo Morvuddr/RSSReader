@@ -14,6 +14,7 @@ class NewsParser: NSObject {
     private var categories: [String] = []
     private var currentElement: String = ""
     private var currentTitle: String = ""
+    private var currentImage: String = ""
     private var currentCategory: String = "" {
         didSet{
             currentCategory = currentCategory.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
@@ -68,6 +69,10 @@ extension NewsParser: XMLParserDelegate {
             currentTitle = ""
             currentPubDate = ""
             currentCategory = ""
+        } else if currentElement == "enclosure" {
+            if let urlString = attributeDict["url"] {
+                currentImage = urlString
+            }
         }
     }
     
@@ -87,7 +92,7 @@ extension NewsParser: XMLParserDelegate {
     func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
         
         if elementName == "item" {
-            let rssItem = RSSItem(title: currentTitle, pubDate: currentPubDate, category: currentCategory)
+            let rssItem = RSSItem(title: currentTitle, pubDate: currentPubDate, category: currentCategory, img: currentImage)
             rssItems.append(rssItem)
         }
     }
