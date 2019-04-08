@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		CF0318242257868000DFC8B1 /* NewsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF0318232257868000DFC8B1 /* NewsViewController.swift */; };
 		CF03182622578B4000DFC8B1 /* NewsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF03182522578B4000DFC8B1 /* NewsTableViewCell.swift */; };
-		CF03182822578C0000DFC8B1 /* XMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF03182722578C0000DFC8B1 /* XMLParser.swift */; };
+		CF03182822578C0000DFC8B1 /* NewsParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF03182722578C0000DFC8B1 /* NewsParser.swift */; };
 		CF179BBE225780E800857AFA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF179BBD225780E800857AFA /* AppDelegate.swift */; };
 		CF179BC3225780E800857AFA /* NewsViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CF179BC1225780E800857AFA /* NewsViewController.storyboard */; };
 		CF179BC5225780E900857AFA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CF179BC4225780E900857AFA /* Assets.xcassets */; };
@@ -20,7 +20,7 @@
 /* Begin PBXFileReference section */
 		CF0318232257868000DFC8B1 /* NewsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsViewController.swift; sourceTree = "<group>"; };
 		CF03182522578B4000DFC8B1 /* NewsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsTableViewCell.swift; sourceTree = "<group>"; };
-		CF03182722578C0000DFC8B1 /* XMLParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMLParser.swift; sourceTree = "<group>"; };
+		CF03182722578C0000DFC8B1 /* NewsParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsParser.swift; sourceTree = "<group>"; };
 		CF179BBA225780E700857AFA /* RSSReader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RSSReader.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CF179BBD225780E800857AFA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CF179BC2225780E800857AFA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/NewsViewController.storyboard; sourceTree = "<group>"; };
@@ -66,7 +66,6 @@
 				CF179BC6225780E900857AFA /* LaunchScreen.storyboard */,
 				CF470A7E2257F8AE00B51470 /* Model */,
 				CF179BD12257859B00857AFA /* Views */,
-				CF03182722578C0000DFC8B1 /* XMLParser.swift */,
 			);
 			path = RSSReader;
 			sourceTree = "<group>";
@@ -93,6 +92,7 @@
 			isa = PBXGroup;
 			children = (
 				CF470A7F2257F8BF00B51470 /* RSSItem.swift */,
+				CF03182722578C0000DFC8B1 /* NewsParser.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -168,7 +168,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CF03182822578C0000DFC8B1 /* XMLParser.swift in Sources */,
+				CF03182822578C0000DFC8B1 /* NewsParser.swift in Sources */,
 				CF470A802257F8BF00B51470 /* RSSItem.swift in Sources */,
 				CF179BBE225780E800857AFA /* AppDelegate.swift in Sources */,
 				CF0318242257868000DFC8B1 /* NewsViewController.swift in Sources */,

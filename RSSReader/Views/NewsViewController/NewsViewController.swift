@@ -25,20 +25,31 @@ class NewsViewController: UIViewController {
     }
     
     private func fetchData(){
-        let newsParser = NewsParser().initWithURL("https://www.vesti.ru/vesti.rss")
-
-        rssItems = newsParser.getNews()
-        categories = newsParser.getCategories()
         
-        if currentFilter == "Все"{
-            filteredRssItems = rssItems
-        } else {
-            filteredRssItems = rssItems?.filter(){
-                $0.category == currentFilter
+        DispatchQueue.global(qos: .userInteractive).async{
+            
+            let newsParser = NewsParser().initWithURL("https://www.vesti.ru/vesti.rss")
+            
+            self.rssItems = newsParser.getNews()
+            self.categories = newsParser.getCategories()
+            
+            if self.currentFilter == "Все"{
+                self.filteredRssItems = self.rssItems
+            } else {
+                self.filteredRssItems = self.rssItems?.filter(){
+                    $0.category == self.currentFilter
+                }
+            }
+            print(Thread.isMainThread)
+            DispatchQueue.main.async {
+                self.newsTableView.reloadSections(IndexSet(integer: 0), with: .automatic)
+                print(Thread.isMainThread)
             }
         }
         
-        newsTableView.reloadData()
+
+        
+        
     }
     
     func configureNewsTableView () {
@@ -103,6 +114,10 @@ class NewsViewController: UIViewController {
 
 extension NewsViewController: UITableViewDelegate, UITableViewDataSource {
     
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         guard let filteredRssItems = filteredRssItems else{
@@ -118,7 +133,7 @@ extension NewsViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: NewsTableViewCell.identifier) as! NewsTableViewCell
         
-        if let item = filteredRssItems?[indexPath.item]{
+        if let item = filteredRssItems?[indexPath.row]{
             cell.item = item
         }
         
