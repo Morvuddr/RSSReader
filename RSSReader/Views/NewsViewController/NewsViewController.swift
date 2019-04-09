@@ -12,41 +12,13 @@ class NewsViewController: UIViewController {
     
     @IBOutlet weak var newsTableView: UITableView!
     
-    private var rssItems: [RSSItem]?
-    private var filteredRssItems: [RSSItem]?
-    private var categories: [String]?
-    private var currentFilter = "Все"
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         configureNewsTableView()
-        fetchData()
-    }
-    
-    private func fetchData(){
-        
-        DispatchQueue.global(qos: .userInteractive).async{
-            
-            let newsParser = NewsParser().initWithURL("https://www.vesti.ru/vesti.rss")
-            
-            self.rssItems = newsParser.getNews()
-            self.categories = newsParser.getCategories()
-            
-            if self.currentFilter == "Все"{
-                self.filteredRssItems = self.rssItems
-            } else {
-                self.filteredRssItems = self.rssItems?.filter(){
-                    $0.category == self.currentFilter
-                }
-            }
-            
-            DispatchQueue.main.async {
-                self.newsTableView.reloadSections(IndexSet(integer: 0), with: .automatic)
-            }
-            
+        Data.downloadData(){ [unowned self] in
+            self.reloadNewsTableView()
         }
-        
     }
     
     func configureNewsTableView () {
@@ -64,41 +36,69 @@ class NewsViewController: UIViewController {
                                                 for: .valueChanged)
     }
     
-    @objc func handleRefreshControl() {
+    func reloadNewsTableView(){
+        self.newsTableView.reloadSections(IndexSet(integer: 0), with: .automatic)
+        Data.isDownloading = false
+    }
+    
+    private func refreshData(){
         
         // Update content
         
-        self.fetchData()
+        Data.downloadData(){ [unowned self] in
+            self.reloadNewsTableView()
+        }
         
         // Dismiss the refresh control.
-        DispatchQueue.main.async {
+        let deadline = DispatchTime.now() + .milliseconds(500)
+        DispatchQueue.main.asyncAfter(deadline: deadline) {
             self.newsTableView.refreshControl?.endRefreshing()
         }
         
     }
     
+    @objc func handleRefreshControl() {
+        
+        if !newsTableView.isDragging{
+
+            refreshData()
+            
+        }
+        
+    }
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        
+        if newsTableView.refreshControl?.isRefreshing == true {
+
+            refreshData()
+            
+        }
+        
+    }
+    
     @IBAction func filterNews(_ sender: UIBarButtonItem) {
-        let alert = UIAlertController(title: "Текущий фильтр: \(currentFilter)", message: nil, preferredStyle: .actionSheet)
+        let alert = UIAlertController(title: "Текущий фильтр: \(Data.currentFilter)", message: nil, preferredStyle: .actionSheet)
         
         let action = UIAlertAction(title: "Все", style: .default) { (action) in
-            self.filteredRssItems = self.rssItems
-            self.currentFilter = "Все"
+            Data.filteredNewsItems = Data.newsItems
+            Data.currentFilter = "Все"
             self.newsTableView.reloadData()
         }
         
         alert.addAction(action)
         
-        for category in categories! {
+        for category in Data.categories! {
             let action = UIAlertAction(title: category, style: .default) { (action) in
-                self.filteredRssItems = self.rssItems?.filter(){
+                Data.filteredNewsItems = Data.newsItems?.filter(){
                     $0.category == category
                 }
-                self.currentFilter = category
+                Data.currentFilter = category
                 self.newsTableView.reloadData()
             }
-
+            
             alert.addAction(action)
-
+            
         }
         
         let cancelAction = UIAlertAction(title: "Отмена", style: .cancel, handler: nil)
@@ -117,12 +117,14 @@ extension NewsViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        guard let filteredRssItems = filteredRssItems else{
+        guard let filteredRssItems = Data.filteredNewsItems else{
             
+            newsTableView.separatorColor = UIColor.white
             return 0
             
         }
         
+        newsTableView.separatorColor = UIColor.gray
         return filteredRssItems.count
         
     }
@@ -130,7 +132,7 @@ extension NewsViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: NewsTableViewCell.identifier) as! NewsTableViewCell
         
-        if let item = filteredRssItems?[indexPath.row]{
+        if let item = Data.filteredNewsItems?[indexPath.row]{
             cell.item = item
         }
         
@@ -143,7 +145,7 @@ extension NewsViewController: UITableViewDelegate, UITableViewDataSource {
         let storyboard = UIStoryboard(name: String(describing: NewsItemViewController.self), bundle: nil)
         let viewController = storyboard.instantiateInitialViewController() as! NewsItemViewController
         
-        viewController.newsItem = filteredRssItems?[indexPath.row]
+        viewController.newsItem = Data.filteredNewsItems?[indexPath.row]
         
         navigationController?.pushViewController(viewController, animated: true)
         

@@ -10,7 +10,7 @@ import Foundation
 
 class NewsParser: NSObject {
     
-    private var rssItems: [RSSItem] = []
+    private var newsItems: [NewsItem] = []
     private var categories: [String] = []
     private var currentElement: String = ""
     private var currentTitle: String = ""
@@ -49,8 +49,8 @@ class NewsParser: NSObject {
         
     }
     
-    func getNews() -> [RSSItem] {
-        return rssItems
+    func getNews() -> [NewsItem] {
+        return newsItems
     }
     
     func getCategories() -> [String]{
@@ -92,8 +92,8 @@ extension NewsParser: XMLParserDelegate {
     func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
         
         if elementName == "item" {
-            let rssItem = RSSItem(title: currentTitle, pubDate: currentPubDate, category: currentCategory, img: currentImage)
-            rssItems.append(rssItem)
+            let newsItem = NewsItem(title: currentTitle, pubDate: currentPubDate, category: currentCategory, img: currentImage)
+            newsItems.append(newsItem)
         }
     }
     

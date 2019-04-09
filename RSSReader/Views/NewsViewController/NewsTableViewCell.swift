@@ -13,7 +13,7 @@ class NewsTableViewCell: UITableViewCell {
     @IBOutlet weak var newsTitle: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
     
-    var item: RSSItem! {
+    var item: NewsItem! {
         didSet{
             newsTitle.text = item.title
             dateLabel.text = item.pubDate

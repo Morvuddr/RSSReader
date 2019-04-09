@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct RSSItem {
+struct NewsItem {
     var title: String
     var pubDate: String
     var category: String

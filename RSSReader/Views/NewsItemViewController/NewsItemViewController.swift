@@ -13,7 +13,7 @@ class NewsItemViewController: UIViewController {
     @IBOutlet weak var newsItemImage: UIImageView!
     @IBOutlet weak var newsItemTitle: UILabel!
     
-    var newsItem: RSSItem?
+    var newsItem: NewsItem?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,7 +27,7 @@ class NewsItemViewController: UIViewController {
         DispatchQueue.global(qos: .userInteractive).async{
             let url = URL(string: url)
             let data = NSData(contentsOf:url! as URL)
-            let image = UIImage(data:data! as Data)
+            let image = UIImage(data:data! as Foundation.Data)
             
             DispatchQueue.main.async {
                 self.newsItemImage.alpha = 0
