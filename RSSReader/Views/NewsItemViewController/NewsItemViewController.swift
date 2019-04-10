@@ -12,6 +12,7 @@ class NewsItemViewController: UIViewController {
     
     @IBOutlet weak var newsItemImage: UIImageView!
     @IBOutlet weak var newsItemTitle: UILabel!
+    @IBOutlet weak var newsItemDescription: UILabel!
     
     var newsItem: NewsItem?
 
@@ -20,6 +21,7 @@ class NewsItemViewController: UIViewController {
         
         loadImage(url: newsItem!.img)
         newsItemTitle.text = newsItem?.title
+        newsItemDescription.text = newsItem?.description
         
     }
     

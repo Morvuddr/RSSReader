@@ -13,8 +13,19 @@ class NewsParser: NSObject {
     private var newsItems: [NewsItem] = []
     private var categories: [String] = []
     private var currentElement: String = ""
-    private var currentTitle: String = ""
     private var currentImage: String = ""
+    
+    private var currentTitle: String = ""{
+        didSet{
+            currentTitle = currentTitle.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        }
+    }
+    
+    private var currentDescription: String = ""{
+        didSet{
+            currentDescription = currentDescription.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        }
+    }
     private var currentCategory: String = "" {
         didSet{
             currentCategory = currentCategory.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
@@ -25,9 +36,8 @@ class NewsParser: NSObject {
     }
     private var currentPubDate: String = ""{
         didSet{
-            currentPubDate = currentPubDate.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
             if currentPubDate != ""{
-                currentPubDate.removeLast(3)
+                currentPubDate = currentPubDate.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
             }
         }
     }
@@ -69,6 +79,7 @@ extension NewsParser: XMLParserDelegate {
             currentTitle = ""
             currentPubDate = ""
             currentCategory = ""
+            currentDescription = ""
         } else if currentElement == "enclosure" {
             if let urlString = attributeDict["url"] {
                 currentImage = urlString
@@ -84,6 +95,8 @@ extension NewsParser: XMLParserDelegate {
             currentPubDate += string
         case "category":
             currentCategory += string
+        case "yandex:full-text":
+            currentDescription += string
         default:
             break
         }
@@ -92,7 +105,7 @@ extension NewsParser: XMLParserDelegate {
     func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
         
         if elementName == "item" {
-            let newsItem = NewsItem(title: currentTitle, pubDate: currentPubDate, category: currentCategory, img: currentImage)
+            let newsItem = NewsItem(title: currentTitle, pubDate: currentPubDate, category: currentCategory, img: currentImage, description: currentDescription)
             newsItems.append(newsItem)
         }
     }

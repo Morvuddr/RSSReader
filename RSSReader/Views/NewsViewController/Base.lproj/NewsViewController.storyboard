@@ -32,7 +32,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="News Title" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5jY-0b-7p8">
-                                                    <rect key="frame" x="15" y="10.999999999999996" width="319" height="63.666666666666657"/>
+                                                    <rect key="frame" x="15" y="10.999999999999996" width="319" height="53.666666666666657"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -48,7 +48,7 @@
                                             <constraints>
                                                 <constraint firstItem="aBT-B3-NsC" firstAttribute="leading" secondItem="RpG-Iz-5LD" secondAttribute="leadingMargin" id="3tQ-a9-hoV"/>
                                                 <constraint firstItem="5jY-0b-7p8" firstAttribute="leading" secondItem="RpG-Iz-5LD" secondAttribute="leadingMargin" id="89L-6s-nFE"/>
-                                                <constraint firstItem="aBT-B3-NsC" firstAttribute="top" secondItem="5jY-0b-7p8" secondAttribute="bottom" id="RQ0-LR-BfI"/>
+                                                <constraint firstItem="aBT-B3-NsC" firstAttribute="top" secondItem="5jY-0b-7p8" secondAttribute="bottom" constant="10" id="RQ0-LR-BfI"/>
                                                 <constraint firstItem="5jY-0b-7p8" firstAttribute="trailing" secondItem="RpG-Iz-5LD" secondAttribute="trailingMargin" id="Vz9-ZT-PX6"/>
                                                 <constraint firstItem="aBT-B3-NsC" firstAttribute="trailing" secondItem="RpG-Iz-5LD" secondAttribute="trailingMargin" id="XkZ-2q-taR"/>
                                                 <constraint firstAttribute="bottomMargin" secondItem="aBT-B3-NsC" secondAttribute="bottom" id="elQ-Vm-T5B"/>

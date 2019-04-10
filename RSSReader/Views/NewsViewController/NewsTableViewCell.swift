@@ -16,7 +16,7 @@ class NewsTableViewCell: UITableViewCell {
     var item: NewsItem! {
         didSet{
             newsTitle.text = item.title
-            dateLabel.text = item.pubDate
+            dateLabel.text = item.createDate()
         }
     }
     

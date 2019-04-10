@@ -104,6 +104,8 @@ class NewsViewController: UIViewController {
         let cancelAction = UIAlertAction(title: "Отмена", style: .cancel, handler: nil)
         alert.addAction(cancelAction)
         
+        alert.view.tintColor = UIColor.black
+        
         present(alert, animated: true, completion: nil)
     }
     
