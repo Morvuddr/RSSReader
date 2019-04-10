@@ -12,10 +12,13 @@ class Data {
     
     static var newsItems: [NewsItem]?
     static var filteredNewsItems: [NewsItem]?
-    static var categories: [String]?
+    static var categories: Set<String>?
     static var currentFilter = "Все"
+    
+    // Variable to prevent creating a large number of threads when a user uses pull-to-refresh many times.
     static var isDownloading = false
     
+    // Download data using url in the background thread
     static func downloadData(completion: @escaping () -> ()){
         
         guard isDownloading == false else {
@@ -31,6 +34,7 @@ class Data {
             self.newsItems = newsParser.getNews()
             self.categories = newsParser.getCategories()
             
+            // If a filter is selected, the user will see that the data is updated only for a specific filter.
             if self.currentFilter == "Все"{
                 self.filteredNewsItems = self.newsItems
             } else {

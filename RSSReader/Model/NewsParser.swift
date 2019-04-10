@@ -11,33 +11,24 @@ import Foundation
 class NewsParser: NSObject {
     
     private var newsItems: [NewsItem] = []
-    private var categories: [String] = []
+    // Using set for categories because each category must be unique
+    private var categories: Set<String> = []
     private var currentElement: String = ""
     private var currentImage: String = ""
-    
-    private var currentTitle: String = ""{
-        didSet{
-            currentTitle = currentTitle.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
-        }
-    }
-    
-    private var currentDescription: String = ""{
-        didSet{
-            currentDescription = currentDescription.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
-        }
-    }
+    private var currentTitle: String = ""
+    private var currentDescription: String = ""
     private var currentCategory: String = "" {
         didSet{
-            currentCategory = currentCategory.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
-            if !categories.contains(currentCategory) && currentCategory != "" {
-                categories.append(currentCategory)
+            currentCategory = currentCategory.trimmingCharacters(in: .whitespacesAndNewlines)
+            if currentCategory != "" {
+                categories.insert(currentCategory)
             }
         }
     }
     private var currentPubDate: String = ""{
         didSet{
             if currentPubDate != ""{
-                currentPubDate = currentPubDate.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+                currentPubDate = currentPubDate.trimmingCharacters(in: .whitespacesAndNewlines)
             }
         }
     }
@@ -52,9 +43,6 @@ class NewsParser: NSObject {
         
         let parser = XMLParser(contentsOf: URL(string: url)!)!
         parser.delegate = self
-        parser.shouldProcessNamespaces = false
-        parser.shouldReportNamespacePrefixes = false
-        parser.shouldResolveExternalEntities = false
         parser.parse()
         
     }
@@ -63,7 +51,7 @@ class NewsParser: NSObject {
         return newsItems
     }
     
-    func getCategories() -> [String]{
+    func getCategories() -> Set<String>{
         return categories
     }
     
@@ -105,7 +93,8 @@ extension NewsParser: XMLParserDelegate {
     func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
         
         if elementName == "item" {
-            let newsItem = NewsItem(title: currentTitle, pubDate: currentPubDate, category: currentCategory, img: currentImage, description: currentDescription)
+            var newsItem = NewsItem(title: currentTitle, pubDate: currentPubDate, category: currentCategory, img: currentImage, description: currentDescription)
+            newsItem.trimmingTitleAndDescription()
             newsItems.append(newsItem)
         }
     }

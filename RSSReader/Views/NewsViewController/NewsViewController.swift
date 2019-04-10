@@ -60,7 +60,7 @@ class NewsViewController: UIViewController {
     @objc func handleRefreshControl() {
         
         if !newsTableView.isDragging{
-
+            
             refreshData()
             
         }
@@ -70,13 +70,14 @@ class NewsViewController: UIViewController {
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         
         if newsTableView.refreshControl?.isRefreshing == true {
-
+            
             refreshData()
             
         }
         
     }
     
+    // Configure a filter actionSheet to all available categories
     @IBAction func filterNews(_ sender: UIBarButtonItem) {
         let alert = UIAlertController(title: "Текущий фильтр: \(Data.currentFilter)", message: nil, preferredStyle: .actionSheet)
         
