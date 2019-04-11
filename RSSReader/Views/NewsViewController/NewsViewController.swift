@@ -77,7 +77,7 @@ class NewsViewController: UIViewController {
         
     }
     
-    // Configure a filter actionSheet to all available categories
+    // Configuring a filter actionSheet to all available categories
     @IBAction func filterNews(_ sender: UIBarButtonItem) {
         let alert = UIAlertController(title: "Текущий фильтр: \(Data.currentFilter)", message: nil, preferredStyle: .actionSheet)
         

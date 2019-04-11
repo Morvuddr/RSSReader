@@ -12,10 +12,11 @@ class Data {
     
     static var newsItems: [NewsItem]?
     static var filteredNewsItems: [NewsItem]?
+    // Using set for categories because each category must be unique
     static var categories: Set<String>?
     static var currentFilter = "Все"
     
-    // Variable to prevent creating a large number of threads when a user uses pull-to-refresh many times.
+    // Variable to prevent creating a large number of threads when a user uses pull-to-refresh many times in a row.
     static var isDownloading = false
     
     // Download data using url in the background thread

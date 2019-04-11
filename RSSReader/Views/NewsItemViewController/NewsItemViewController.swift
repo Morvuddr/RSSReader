@@ -31,6 +31,7 @@ class NewsItemViewController: UIViewController {
         
     }
     
+    // Loading image in the background thread
     func loadImage(url: String){
         
         DispatchQueue.global(qos: .userInteractive).async{
